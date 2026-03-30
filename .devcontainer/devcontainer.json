@@ -1,0 +1,14 @@
+{
+  "name": "Data Engineering Stack",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "chmod +x scripts/setup.sh",
+  "forwardPorts": [8080, 3000, 4566, 8081, 9090],
+  "portsAttributes": {
+    "8080": {"label": "Airflow"},
+    "3000": {"label": "Grafana"},
+    "4566": {"label": "LocalStack"}
+  }
+}
