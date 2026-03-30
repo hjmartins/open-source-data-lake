@@ -65,7 +65,7 @@ chmod +x scripts/setup.sh && ./scripts/setup.sh
 
 # 3. Access services
 # Airflow:  http://localhost:8080  (admin/admin)
-# Grafana:  http://localhost:3000  (admin/admin)
+# Grafana:  http://localhost:3000  (admin/admin) 123456
 # LocalStack: http://localhost:4566
 ```
 

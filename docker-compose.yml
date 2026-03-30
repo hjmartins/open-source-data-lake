@@ -71,13 +71,9 @@ services:
   # ─── Airflow Init ─────────────────────────────────────────────────────────
   airflow-init:
     <<: *airflow-common
+    user: "${AIRFLOW_UID:-50000}:0"
     command: >
-      bash -c "
-        airflow db init &&
-        airflow users create --username admin --password admin
-          --firstname Admin --lastname User
-          --role Admin --email admin@example.com
-      "
+      bash -c "airflow db migrate && airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com"
     restart: "no"
 
   # ─── Airflow Webserver ────────────────────────────────────────────────────
@@ -104,37 +100,34 @@ services:
 
   # ─── Apache Spark Master ──────────────────────────────────────────────────
   spark-master:
-    image: bitnami/spark:3.5
+    image: apache/spark:3.5.1
     container_name: spark-master
+    entrypoint: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"]
     environment:
-      SPARK_MODE: master
-      SPARK_RPC_AUTHENTICATION_ENABLED: "no"
-      SPARK_RPC_ENCRYPTION_ENABLED: "no"
+      SPARK_MASTER_HOST: spark-master
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: us-east-1
     ports:
-      - "8081:8080"   # Spark Master UI
-      - "7077:7077"   # Spark Master port
+      - "8081:8080"
+      - "7077:7077"
     volumes:
-      - ./spark_jobs:/opt/bitnami/spark/jobs
+      - ./spark_jobs:/opt/spark/jobs
     networks:
       - de-network
 
-  # ─── Apache Spark Worker ──────────────────────────────────────────────────
   spark-worker:
-    image: bitnami/spark:3.5
+    image: apache/spark:3.5.1
     container_name: spark-worker
+    entrypoint: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077"]
     environment:
-      SPARK_MODE: worker
-      SPARK_MASTER_URL: spark://spark-master:7077
-      SPARK_WORKER_MEMORY: 2G
+      SPARK_WORKER_MEMORY: 2g
       SPARK_WORKER_CORES: 2
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: us-east-1
     volumes:
-      - ./spark_jobs:/opt/bitnami/spark/jobs
+      - ./spark_jobs:/opt/spark/jobs
     networks:
       - de-network
     depends_on:
