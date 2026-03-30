@@ -59,10 +59,8 @@ data-engineering-project/
 ## 🚀 Quick Start
 
 ```bash
-# 1. Clone and enter project
-git clone <repo> && cd data-engineering-project
 
-# 2. Start everything
+#  Start everything
 chmod +x scripts/setup.sh && ./scripts/setup.sh
 
 # 3. Access services
@@ -88,3 +86,5 @@ chmod +x scripts/setup.sh && ./scripts/setup.sh
 
 ---
 *This project demonstrates real-world Data Engineering patterns using free, open-source tools.*
+---
+*This project was initially created with the goal of showcasing my cloud skills. I was watching some YouTube tutorials and reviewing some projects on GitHub and Medium. I didn't intend to monitor this project, but I thought, "Why not?" Learning while doing was enjoyable.* 
