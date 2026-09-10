@@ -47,7 +47,6 @@ data-engineering-project/
 │   └── gold_layer.py       # Silver → Gold (aggregate)
 ├── scripts/
 │   ├── setup.sh            # One-command setup
-│   ├── generate_data.py    # Synthetic data generator
 │   └── cost_report.py      # Cost monitoring simulation
 ├── monitoring/
 │   ├── prometheus.yml

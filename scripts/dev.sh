@@ -200,7 +200,6 @@ start_profile() {
     echo -e "  ${YELLOW}Dicas:${NC}"
     echo "  Acionar DAG:  docker exec airflow-scheduler airflow dags trigger sales_ingestion"
     echo "  Ver logs:     docker logs -f airflow-scheduler"
-    echo "  Gerar dados:  python scripts/generate_data.py --days 7"
   fi
   if echo "$SERVICES" | grep -q "spark"; then
     echo ""

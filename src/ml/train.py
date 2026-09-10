@@ -13,7 +13,6 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 from src.config import POSTGRES_URL, ANALYTICS_BASE_PATH, MODELS_PATH
-from src.utils.conn_dtbase import get_weather_data
 from src.utils.feature_transform import build_training_dataset
 from src.utils.new_df import new_df
 

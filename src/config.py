@@ -30,12 +30,6 @@ POSTGRES_URL = (
     f"@{POSTGRES_CONN['host']}:{POSTGRES_CONN['port']}/{POSTGRES_CONN['database']}"
 )
 
-# --- MinIO ---
-MINIO_ENDPOINT   = os.environ.get("MINIO_ENDPOINT",   "minio:9000")
-MINIO_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY", "admin")
-MINIO_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY", "admin123")
-MINIO_BUCKET     = os.environ.get("MINIO_BUCKET",     "weather-data")
-
 # --- Open-Meteo ---
 ARCHIVE_API_URL  = "https://archive-api.open-meteo.com/v1/archive"
 FORECAST_API_URL = "https://api.open-meteo.com/v1/forecast"
