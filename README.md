@@ -1,20 +1,62 @@
-# 🏗️ Data Engineering Project — Open-Source Cloud Stack
+#  Open-Source Cloud Stack
 
 A production-grade Data Engineering project simulating AWS infrastructure locally using **LocalStack**, orchestrated with **Apache Airflow**, processed with **PySpark**, and provisioned with **Terraform**.
 
 ## Architecture Overview
 
+Weather data from the [Open-Meteo API](https://open-meteo.com/) (New York, Los Angeles and Chicago)
+flows through a bronze → silver → gold data lake on LocalStack S3. Each stage is triggered by the
+arrival of the previous one's data, and a forecasting model is trained on the gold layer.
+
+```mermaid
+flowchart LR
+    api["Open-Meteo API"]
+
+    subgraph airflow["Apache Airflow"]
+        ing["weather_ingestion<br/>@daily"]
+        etl["weather_etl_pipeline<br/>on Dataset(raw)"]
+        train_dag["training_dag<br/>@weekly"]
+    end
+
+    subgraph s3["S3 on LocalStack"]
+        raw[("raw")]
+        bronze[("bronze")]
+        silver[("silver")]
+        gold[("gold")]
+    end
+
+    subgraph spark["PySpark cluster"]
+        bronze_job["bronze_layer.py"]
+        silver_job["silver_layer.py"]
+        gold_job["gold_layer.py"]
+    end
+
+    model["train.py<br/>RandomForest"]
+    obs["Prometheus + Grafana"]
+
+    api -- "JSON" --> ing
+    ing -- "parquet" --> raw
+    ing -. "Dataset event" .-> etl
+    etl -. "spark-submit" .-> spark
+    raw --> bronze_job
+    bronze_job --> bronze
+    bronze --> silver_job
+    silver_job --> silver
+    silver --> gold_job
+    gold_job --> gold
+    train_dag -. "triggers" .-> model
+    gold -- "ml_features" --> model
+    model -- "models/" --> gold
+    airflow -. "metrics" .-> obs
+    spark -. "metrics" .-> obs
+
+    style bronze stroke:#98582A,stroke-width:2px
+    style silver stroke:#687686,stroke-width:2px
+    style gold stroke:#94730F,stroke-width:2px
 ```
-Raw Data (S3/LocalStack)
-    ↓
-Apache Airflow (Orchestration)
-    ↓
-PySpark (ETL Processing)
-    ↓
-Processed/Curated Data (S3/LocalStack)
-    ↓
-Monitoring Dashboard (Prometheus + Grafana)
-```
+
+Solid arrows carry data; dashed arrows are Airflow triggers and metrics. This is the **target**
+architecture: the pipeline is being migrated to it step by step.
 
 ## 🛠️ Tech Stack (100% Open-Source / Free)
 
